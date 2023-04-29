@@ -1,66 +1,101 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+Pet-Shop Backend Developer Task
+==============
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Writing Pet-Shop Api using Laravel, in PHP8.2.
 
-## About Laravel
+### Background
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Tech-stack 
+#### (Development Environment)
+* [WSL 2](https://docs.microsoft.com/en-us/windows/wsl/install) - a compatibility layer for running Linux binary executables natively on Windows 10, Windows 11, and Windows Server 2019.
+* [Ubuntu](https://ubuntu.com/wsl) - allows access to the Linux terminal on Windows, develop cross-platform applications, and manage IT infrastructure without leaving Windows.
+* [PHP 8.2](https://www.php.net/releases/8.2/en.php) - an interpreted high-level general-purpose programming language
+* [Docker](https://www.docker.com/) - a set of platform as a service products that use OS-level virtualization to deliver software in packages called containers.
+  * [Laravel](https://laravel.com/) - a web framework written in PHP
+  * [MySQL](https://www.mysql.com/) - a cross platform relational database program
+  * [Nginx](https://www.nginx.com/) - a web server used to serve the application
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Running Locally
+* The project has been containerized with the following services included:-
 
-## Learning Laravel
+    | Service    | Port |
+    |------------|------|
+    | APP (HTTP) | 8000 |
+    | MySQL      | 3306 |
+    | Nginx      |      |
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+* Follow these steps for the initial setup
+  1. Clone the repository 
+      ````bash
+          git clone git@github.com:dennismwagiru/pet-shop.git
+      ````
+  2. Build and start server
+      ```bash
+         make install
+      ```
+     Go to [http://127.0.0.1:8000](http://127.0.0.1:8000)
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### Other scripts included
+* Subsequent Runs
+    ````bash
+        make up
+    ````
+* Build docker image
+    ````bash
+        make build
+    ````
+* Stop
+    ````bash
+        make stop
+    ````
+* Run migrations
+    ````bash
+       make migrate
+    ````
+* Seed your database
+    ````bash
+       make seed
+    ````
+* Fresh migrations
+    ````bash
+        make fresh
+    ````
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Swagger [TODO]
 
-## Laravel Sponsors
+### Requirements
+#### Must Have
+- [X] The application must be written in PHP 8.2
+- [X] The application must use Laravel Framework v.10
+- [ ] Every route must be documented using swagger (OpenAPI) so that we can test your backend APIs
+- [ ] The application must have at least 10 unit or feature tests
+- [ ] The application must use a JSON Web Token implemented with a middleware
+    - [ ] You must implement one of these libraries for Token Signing/Verification
+      - Laravel Passport, Sanctum, or similar Laravel packages are not allowed 
+        - For example jwt-auth
+      - The token must be compliant with the RFC 7519 standard
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+- [X] The application must include a README.md
+- [X] The application must run “out-of-the-box.”
+    * We will follow the steps provided on the README.md file, such as booting the application from a shell script.
+- [X] The code must be pushed into your personal repository, which is available to us.
+    * We really want to see your individual commits :slight_smile:
+      * Please avoid big commits by breaking them down into smaller and descriptive commits, ideally containing code specific to a feature.
 
-### Premium Partners
+#### The Recommended
+- [ ] The application should have database Migrations and Seeders files
+- [ ] Every table should have an Eloquent model and relationships (if applicable)
+- [ ] Every endpoint should have its own controller and request class
+  * The methods of the controllers must be linked to a route
+- [ ] Every route should be protected by a middleware (if applicable)
+- [ ] The application should have unit tests, as well as feature tests for each one of the API endpoints
+- [ ] The application should follow the PSR-12 standard
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+#### Nice to have (bonus points)
+- [X] It would be nice to have a Dockerfile for the application and to be able to boot it with docker-compose or docker run
+  * Laravel Sail or similar packages are not providing extra points; you should write something yourself to gain an advantage.
+- [ ] It would be nice to see a Laravel IDE Helper Generator
+- [ ] It would be nice if Larastan Level 8 rules for static code coverage passed successfully
+  * Pro Tip: Avoid ignoring errors as much as possible
+- [ ] It would be nice to have PHP Insights implemented with a minimum score of 75% for each quality gate

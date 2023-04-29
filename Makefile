@@ -1,4 +1,5 @@
 install:
+	cp .env.example .env
 	@make build
 	@make up
 	docker compose exec app composer install
@@ -10,7 +11,6 @@ install:
 up:
 	docker compose up -d
 build:
-	cp .env.example .env
 	docker compose build
 stop:
 	docker compose stop
