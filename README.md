@@ -26,15 +26,15 @@ Writing Pet-Shop Api using Laravel, in PHP8.2.
     | Nginx      |      |
 
 * Follow these steps for the initial setup
-  1. Clone the repository 
-      ````bash
-          git clone git@github.com:dennismwagiru/pet-shop.git
-      ````
+    1. Clone the repository
+        ````bash
+            git clone git@github.com:dennismwagiru/pet-shop.git && cd pet-shop
+        ````
   2. Build and start server
       ```bash
          make install
       ```
-     Go to [http://127.0.0.1:8000](http://127.0.0.1:8000)
+     Go to <a href="http://127.0.0.1:8000" target="_blank">http://127.0.0.1:8000</a>
 
 ### Other scripts included
 * Subsequent Runs
@@ -70,11 +70,9 @@ Writing Pet-Shop Api using Laravel, in PHP8.2.
 - [X] The application must use Laravel Framework v.10
 - [ ] Every route must be documented using swagger (OpenAPI) so that we can test your backend APIs
 - [ ] The application must have at least 10 unit or feature tests
-- [ ] The application must use a JSON Web Token implemented with a middleware
-    - [ ] You must implement one of these libraries for Token Signing/Verification
-      - Laravel Passport, Sanctum, or similar Laravel packages are not allowed 
-        - For example jwt-auth
-      - The token must be compliant with the RFC 7519 standard
+- [X] The application must use a JSON Web Token implemented with a middleware
+    - [X] Implemented HS256 for Token Signing/Verification
+      - [X] The token must be compliant with the RFC 7519 standard
 
 - [X] The application must include a README.md
 - [X] The application must run “out-of-the-box.”
