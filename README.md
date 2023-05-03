@@ -34,7 +34,7 @@ Writing Pet-Shop Api using Laravel, in PHP8.2.
       ```bash
          make install
       ```
-     Go to <a href="http://127.0.0.1:8000" target="_blank">http://127.0.0.1:8000</a>
+     Go to <a href="http://127.0.0.1:8000" target="_blank">http://127.0.0.1:8000</a> to launch Swagger Api Documentation
 
 ### Other scripts included
 * Subsequent Runs
@@ -61,8 +61,6 @@ Writing Pet-Shop Api using Laravel, in PHP8.2.
     ````bash
         make fresh
     ````
-
-### Swagger [TODO]
 
 ### Requirements
 #### Must Have
