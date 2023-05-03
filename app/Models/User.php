@@ -64,8 +64,6 @@ class User extends Authenticatable
         );
         $signature_encoded = base64url_encode($signature);
 
-        $jwt = "$headers_encoded.$payload_encoded.$signature_encoded";
-
-        return $jwt;
+        return "$headers_encoded.$payload_encoded.$signature_encoded";
     }
 }

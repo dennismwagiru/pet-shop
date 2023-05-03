@@ -8,6 +8,7 @@ install:
 	docker compose exec app chmod -R 777 storage bootstrap/cache
 	docker compose exec app php artisan db:wait
 	@make fresh
+	@make seed
 up:
 	docker compose up -d
 build:
