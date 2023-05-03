@@ -21,3 +21,5 @@ fresh:
 	docker compose exec app php artisan migrate:fresh --seed
 seed:
 	docker compose exec app php artisan db:seed
+test:
+	docker compose exec app php artisan test
