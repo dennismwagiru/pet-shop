@@ -2,6 +2,7 @@ install:
 	cp .env.example .env
 	@make build
 	@make up
+	docker compose exec app sudo chown -R ubuntu:www-data .
 	docker compose exec app composer install
 	docker compose exec app php artisan key:generate
 	docker compose exec app php artisan storage:link
