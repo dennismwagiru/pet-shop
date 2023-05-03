@@ -40,4 +40,32 @@ class User extends Authenticatable
         'is_marketing' => 'boolean',
         'last_login_at' => 'datetime',
     ];
+
+    /**
+     * @return string
+     *
+     * JWT Signature -> HMACSHA256(base64UrlEncode(header) + "." + base64UrlEncode(payload), secret)
+     */
+    public function generateJwtToken(): string {
+        $payload = array(
+            'iss' => config('app.url'),
+            'user_uuid' => $this->uuid,
+            'exp' => now()->add('seconds', config('settings.jwt.lifetime'))
+        );
+
+        $headers_encoded = base64url_encode(json_encode(config('settings.jwt.headers')));
+        $payload_encoded = base64url_encode(json_encode($payload));
+
+        $signature = hash_hmac(
+            algo: config('settings.jwt.algorithm'),
+            data: "$headers_encoded.$payload_encoded",
+            key: config('settings.jwt.secret'),
+            binary: true
+        );
+        $signature_encoded = base64url_encode($signature);
+
+        $jwt = "$headers_encoded.$payload_encoded.$signature_encoded";
+
+        return $jwt;
+    }
 }

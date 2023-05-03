@@ -37,13 +37,15 @@ class JSONWebTokenMiddleware
 
 
         // build a signature based on the header and payload using the secret
-        $base64_url_header = $this->base64url_encode($header);
-        $base64_url_payload = $this->base64url_encode($payload);
+        $base64_url_header = base64url_encode($header);
+        $base64_url_payload = base64url_encode($payload);
         $signature = hash_hmac('SHA256', $base64_url_header . "." . $base64_url_payload, config('settings.jwt.secret'), true);
-        $base64_url_signature = $this->base64url_encode($signature);
+        $base64_url_signature = base64url_encode($signature);
 
         // verify it matches the signature provided in the jwt
         $is_signature_valid = ($base64_url_signature === $signature_provided);
+
+        Log::info($payload);
 
         if (!$is_signature_valid) {
             return response()->json(['message' => 'Invalid signature'], 403);
@@ -55,7 +57,7 @@ class JSONWebTokenMiddleware
      * @param $str
      * @return string
      */
-    private function base64url_encode($str): string {
-        return rtrim(strtr(base64_encode($str), '+/', '-_'), '=');
-    }
+//    private function base64url_encode($str): string {
+//        return rtrim(strtr(base64_encode($str), '+/', '-_'), '=');
+//    }
 }
