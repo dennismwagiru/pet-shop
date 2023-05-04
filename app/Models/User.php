@@ -62,9 +62,7 @@ class User extends Authenticatable
     {
         $expiresAt = now()->add('seconds', config('settings.jwt.lifetime'));
         $payload = [
-            'iss' => config('app.url'),
-            'user_uuid' => $this->uuid,
-            'exp' => $expiresAt->timestamp,
+            'iss' => config('app.url'), 'user_uuid' => $this->uuid, 'exp' => $expiresAt->timestamp,
         ];
 
         $headers_encoded = base64url_encode(json_encode(config('settings.jwt.headers')));
