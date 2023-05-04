@@ -15,10 +15,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::prefix('v1')->name('v1.')->group(function () {
+Route::prefix('v1')->name('v1.')->middleware('accept-json')->group(function () {
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('login', [AdminController::class, 'login'])->name('login');
-        Route::get('logout', [AdminController::class, 'logout'])->middleware('auth:jwt')->name('logout');
+        Route::get('logout', [AdminController::class, 'logout'])->name('logout');
     });
 });
 

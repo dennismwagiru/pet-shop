@@ -35,6 +35,23 @@ paths:
         500:
           description: "Internal server error"
 
+  /api/v1/admin/logout:
+    get:
+      tags:
+        - Admin
+      summary: Logout from an Admin account
+      operationId: "admin-logout"
+      responses:
+        200:
+          description: "Ok"
+        401:
+          description: "Unauthorized"
+        404:
+          description: "Page not found"
+        422:
+          description: "Unprocessable Entity"
+        500:
+          description: "Internal server error"
 
 components:
   securitySchemes:

@@ -252,7 +252,7 @@ class JwtAuthGuard implements Guard
      */
     public function logout(): void
     {
-        $this->user->jwt_tokens()
+        $this->user?->jwt_tokens()
             ->where('expires_at', '>=', now())
             ->update(['expires_at' => now()]);
     }
