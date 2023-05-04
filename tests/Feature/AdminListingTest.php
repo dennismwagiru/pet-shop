@@ -112,7 +112,44 @@ class AdminListingTest extends TestCase
     }
 
     public function test_authenticated_filtered_listing(): void {
-        $this->assertTrue(true);
+        DB::table('users')->insert([
+            'uuid' => Str::orderedUuid(),
+            'first_name' => "A Test",
+            'last_name' => "User",
+            'is_admin' => true,
+            'email' => 'a-test-user@buckhill.co.uk',
+            'email_verified_at' => now(),
+            'password' => bcrypt('password'),
+            'avatar' => '',
+            'address' => '',
+            'phone_number' => '',
+            'is_marketing' => false
+        ]);
+        $response = $this->get('/api/v1/admin/user-listing?email=a-test-user',
+            headers: [
+                'Authorization' => 'Bearer '. $this->getUserToken(),
+            ]
+        );
+
+        $response->assertStatus(200)
+            ->assertJsonPath('current_page', 1)
+            ->assertJsonPath('data.0.email', 'a-test-user@buckhill.co.uk')
+            ->assertJsonPath('total', 1)
+            ->assertJsonStructure($this->structure);
+    }
+
+    public function test_authenticated_sort_by_unknown_column(): void {
+        $response = $this->get('/api/v1/admin/user-listing?email=a-test-user',
+            headers: [
+                'Authorization' => 'Bearer '. $this->getUserToken(),
+            ]
+        );
+
+        $response->assertStatus(200)
+            ->assertJsonPath('current_page', 1)
+            ->assertJsonPath('data.0.email', 'admin@buckhill.co.uk')
+            ->assertJsonPath('total', 1)
+            ->assertJsonStructure($this->structure);
     }
 
     public function test_authenticated_ordered_listing(): void {

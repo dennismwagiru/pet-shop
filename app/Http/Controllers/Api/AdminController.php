@@ -9,6 +9,7 @@ use App\Http\Requests\UserRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Schema;
 
 class AdminController extends Controller
 {
@@ -72,7 +73,10 @@ class AdminController extends Controller
         $payload = User::where('is_admin', true)->filterBy(request()->all())
 //            ->orderBy('email', $order')
             ->when(request('sortBy', false), function ($q, $sortBy) use ($order) {
-                return $q->orderBy($sortBy, $order);
+                if (Schema::hasColumn('users', $sortBy)) {
+                    return $q->orderBy($sortBy, $order);
+                }
+                return null;
             })
             ->paginate(request('limit', config('settings.defaults.limit')));
 
