@@ -2,19 +2,73 @@ openapi: 3.0.0
 info:
   title: Pet Shop API
   description: Pet Shop API Swagger Documentation
-  version: 0.1.9
+  version: 0.0.1
 
 servers:
   - url: http://127.0.0.1:8000/api
     description: local server
 
+security:
+  - bearerAuth: []
+
+tags:
+  - name: "Admin"
+    description: "Admin API endpoint"
+  - name: "User"
+    description: "User API endpoint"
+
 paths:
-  /users:
-    get:
-      summary: Returns a list of users.
+  /api/v1/admin/login:
+    post:
+      tags:
+        - Admin
+      summary: Login to an Admin account
+      requestBody:
+        $ref: '#/components/requestBodies/LoginBody'
       responses:
-        '200':
-          description: A JSON array of user names
-          content:
-            application/json:
-              schema:
+        200:
+          description: "Ok"
+        404:
+          description: "Page not found"
+        422:
+          description: "Unprocessable Entity"
+        500:
+          description: "Internal server error"
+
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      name: bearerAuth
+      in: header
+      scheme: bearer
+      bearerFormat: JWT
+
+  responses:
+    200:
+      description: "Ok"
+    401:
+      description: "Unauthorized"
+    404:
+      description: "Page not found"
+    422:
+      description: "Unprocessable Entity"
+    500:
+      description: "Internal server error"
+
+  requestBodies:
+    LoginBody:
+      required: true
+      content:
+        application/x-www-form-urlencoded:
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+              password:
+                type: string
+            required:
+              - email
+              - password

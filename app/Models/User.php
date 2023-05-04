@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -41,16 +43,23 @@ class User extends Authenticatable
         'last_login_at' => 'datetime',
     ];
 
+    public function jwt_tokens(): HasMany
+    {
+        return $this->hasMany(JwtToken::class, 'user_id');
+    }
+
     /**
-     * @return string
+     * @return JwtToken
      *
      * JWT Signature -> HMACSHA256(base64UrlEncode(header) + "." + base64UrlEncode(payload), secret)
      */
-    public function generateJwtToken(): string {
+    public function generateJwtToken(): JwtToken
+    {
+        $expiresAt = now()->add('seconds', config('settings.jwt.lifetime'));
         $payload = array(
             'iss' => config('app.url'),
             'user_uuid' => $this->uuid,
-            'exp' => now()->add('seconds', config('settings.jwt.lifetime'))
+            'exp' => $expiresAt->timestamp
         );
 
         $headers_encoded = base64url_encode(json_encode(config('settings.jwt.headers')));
@@ -64,6 +73,22 @@ class User extends Authenticatable
         );
         $signature_encoded = base64url_encode($signature);
 
-        return "$headers_encoded.$payload_encoded.$signature_encoded";
+        return JwtToken::create(array(
+            'unique_id' => "$headers_encoded.$payload_encoded.$signature_encoded",
+            'user_id' => $this->id,
+            'token_title' => $this->first_name . " " . now()->timestamp,
+            'expires_at' => $expiresAt
+        ));
+    }
+
+    /**
+     * Fetch user by Credentials
+     *
+     * @param array $credentials
+     * @return Authenticatable|null
+     */
+    public function fetchUserByCredentials(array $credentials): ?Authenticatable
+    {
+        return User::where(['email' => $credentials['email']])->first();
     }
 }
