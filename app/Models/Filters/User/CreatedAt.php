@@ -2,8 +2,8 @@
 
 namespace App\Models\Filters\User;
 
-use App\Services\Utilities\FilterContract;
 use App\Services\Utilities\QueryFilter;
+use App\Services\Utilities\FilterContract;
 
 class CreatedAt extends QueryFilter implements FilterContract
 {

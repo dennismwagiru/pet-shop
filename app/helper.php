@@ -30,7 +30,7 @@ if (!function_exists('boolean')) {
         if ($typeOfVar == 'boolean') {
             return $variable;
         } elseif (is_numeric($variable)) {
-            return (int)$variable == 1;
+            return (int) $variable == 1;
         } elseif ($typeOfVar == 'string') {
             return $variable == 'true';
         }
