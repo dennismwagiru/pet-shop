@@ -56,7 +56,7 @@ class Handler extends ExceptionHandler
                 return $this->apiResponse(
                     [
                         'success' => 0,
-                        'error' => 'Unauthenticated or Token Expired, Please Login',
+                        'error' => 'Unauthorized',
                     ],
                     401
                 );

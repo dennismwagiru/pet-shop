@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -12,6 +13,60 @@ use Tests\TestCase;
 class CreateAdminTest extends TestCase
 {
     use DatabaseTransactions;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->artisan('db:seed');
+    }
+
+    protected function getUserToken() {
+        $response = $this->post(
+            uri: '/api/v1/admin/login',
+            data: array(
+                "email" => 'admin@buckhill.co.uk',
+                "password" => 'password'
+            )
+        );
+
+        return $response->json('data.token');
+    }
+
+    public function test_create_admin_unauthenticated(): void {
+        $email = 'test@buckhill.co.uk';
+        $password = 'password';
+        $response = $this->post(
+            uri: '/api/v1/admin/create',
+            data: array(
+                "first_name" => "Test",
+                "last_name" => "User",
+                "email" => $email,
+                "password" => $password,
+                "password_confirmation" => $password,
+                "avatar" => Str::uuid(),
+                "phone_number" => "2547023129303",
+                "address" => "32, Nairobi"
+            ),
+            headers: [
+                'Accept' => 'application/json'
+            ]
+        );
+
+        $response->assertStatus(401)
+            ->assertJsonPath('success', 0)
+            ->assertJsonPath('error', 'Unauthorized')
+            ->assertJsonStructure([
+                'success',
+                'data',
+                'error',
+                'errors',
+                'trace'
+            ]);
+
+        $this->assertDatabaseMissing('users', [
+            "email" => $email
+        ]);
+    }
 
     public function test_create_admin_with_mismatching_passwords(): void {
         $response = $this->post(
@@ -24,7 +79,10 @@ class CreateAdminTest extends TestCase
                 "password_confirmation" => "password_confirmation",
                 "avatar" => Str::uuid(),
                 "phone_number" => "2547023129303"
-            )
+            ),
+            headers: [
+                'Authorization' => 'Bearer '. $this->getUserToken(),
+            ]
         );
 
         $response->assertStatus(422)
@@ -56,7 +114,10 @@ class CreateAdminTest extends TestCase
                 "password_confirmation" => "password",
                 "avatar" => Str::uuid(),
                 "phone_number" => "2547023129303"
-            )
+            ),
+            headers: [
+                'Authorization' => 'Bearer '. $this->getUserToken(),
+            ]
         );
 
         $response->assertStatus(422)
@@ -102,7 +163,10 @@ class CreateAdminTest extends TestCase
                 "password_confirmation" => "password_confirmation",
                 "avatar" => Str::uuid(),
                 "phone_number" => "2547023129303"
-            )
+            ),
+            headers: [
+                'Authorization' => 'Bearer '. $this->getUserToken(),
+            ]
         );
 
         $response->assertStatus(422)
@@ -138,7 +202,10 @@ class CreateAdminTest extends TestCase
                 "avatar" => Str::uuid(),
                 "phone_number" => "2547023129303",
                 "address" => "32, Nairobi"
-            )
+            ),
+            headers: [
+                'Authorization' => 'Bearer '. $this->getUserToken(),
+            ]
         );
 
         $response->assertStatus(200)
