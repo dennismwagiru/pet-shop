@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Events\SetModelUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -13,13 +13,17 @@ class User extends Authenticatable
     use HasFactory;
     use Notifiable;
 
+    protected $dispatchesEvents = [
+        'creating' => SetModelUuid::class,
+    ];
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
     protected $fillable = ['uuid',
-        'first_name', 'last_name', 'email', 'avatar', 'address', 'phone_number', 'is_marketing'
+        'first_name', 'last_name', 'email', 'avatar', 'address', 'phone_number', 'is_marketing', 'is_admin', 'password'
     ];
 
     /**

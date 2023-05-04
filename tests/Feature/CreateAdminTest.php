@@ -30,7 +30,7 @@ class CreateAdminTest extends TestCase
         $response->assertStatus(422)
             ->assertJsonPath('success', 0)
             ->assertJsonPath('error', "Failed Validation")
-            ->assertJsonPath('errors.password', "The password confirmation does not match.")
+            ->assertJsonPath('errors.password.0', "The password confirmation does not match.")
             ->assertJsonStructure([
                 'success',
                 'data',
@@ -108,7 +108,7 @@ class CreateAdminTest extends TestCase
         $response->assertStatus(422)
             ->assertJsonPath('success', 0)
             ->assertJsonPath('error', "Failed Validation")
-            ->assertJsonPath('errors.email', "The email has already been taken.")
+            ->assertJsonPath('errors.email.0', "The email has already been taken.")
             ->assertJsonStructure([
                 'success',
                 'data',
@@ -119,9 +119,9 @@ class CreateAdminTest extends TestCase
                 'trace'
             ]);
 
-        $this->assertDatabaseMissing('users', [
-            "email" => $email
-        ]);
+        $count = DB::table('users')->where('email', $email)->count();
+
+        $this->assertTrue($count == 1);
     }
 
     public function test_create_admin_with_valid_payload(): void {
@@ -136,12 +136,14 @@ class CreateAdminTest extends TestCase
                 "password" => $password,
                 "password_confirmation" => $password,
                 "avatar" => Str::uuid(),
-                "phone_number" => "2547023129303"
+                "phone_number" => "2547023129303",
+                "address" => "32, Nairobi"
             )
         );
 
         $response->assertStatus(200)
             ->assertJsonPath('success', 1)
+            ->assertJsonPath('data.email', $email)
             ->assertJsonStructure([
                 'success',
                 'data' => [
@@ -160,8 +162,6 @@ class CreateAdminTest extends TestCase
                 'extra'
             ]);
 
-        $this->assertDatabaseMissing('users', [
-            "email" => $email
-        ]);
+        $this->assertDatabaseHas('users', ['email' => $email]);
     }
 }

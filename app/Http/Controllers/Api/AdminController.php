@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Validator;
 
 class AdminController extends Controller
 {
@@ -44,7 +45,7 @@ class AdminController extends Controller
 
     }
 
-    public function logout(Request $request): JsonResponse {
+    public function logout(): JsonResponse {
         Auth::guard('jwt')->logout();
 
         return response()->json(array(
@@ -55,4 +56,52 @@ class AdminController extends Controller
             "extra" => []
         ));
     }
+
+    public function create(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            "first_name" => 'required',
+            "last_name" => 'required',
+            "email" => 'required|unique:users,email',
+            "password" => 'required|confirmed',
+            "avatar" => 'required',
+            "address" => 'required',
+            "phone_number" => 'required'
+        ], [
+            'password.confirmed' => 'The password confirmation does not match.',
+        ]);
+
+        if ( $validator->fails() )  {
+            return response()->json(array(
+                "success" => 0,
+                "data" => [],
+                "error" => "Failed Validation",
+                "errors" => $validator->errors(),
+                "trace" => []
+            ), 422);
+        }
+
+        $user = User::create(array_merge(
+            $request->all(),
+            [
+                'is_admin' => true,
+                'password' => bcrypt($request->get('password'))
+            ]
+        ));
+
+        $jwtToken = $user->generateJwtToken();
+
+        return response()->json(array(
+            "success" => 1,
+            "data" => array_merge(
+                $user->toArray(),
+                ["token" => $jwtToken->unique_id]
+            ),
+            "error" => null,
+            "errors" => [],
+            "extra" => []
+        ));
+    }
+
+
 }

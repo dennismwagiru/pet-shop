@@ -19,6 +19,7 @@ Route::prefix('v1')->name('v1.')->middleware('accept-json')->group(function () {
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('login', [AdminController::class, 'login'])->name('login');
         Route::get('logout', [AdminController::class, 'logout'])->name('logout');
+        Route::post('create', [AdminController::class, 'create'])->name('create');
     });
 });
 
