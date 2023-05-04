@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Models\Events\SetModelUuid;
 use Illuminate\Notifications\Notifiable;
+use App\Services\Utilities\FilterBuilder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -93,5 +95,17 @@ class User extends Authenticatable
     public function fetchUserByCredentials(array $credentials): ?Authenticatable
     {
         return User::where(['email' => $credentials['email']])->first();
+    }
+
+    /**
+     * @param $query
+     * @param $filters
+     * @return Builder
+     */
+    public function scopeFilterBy($query, $filters): Builder
+    {
+        $filter = new FilterBuilder($query, $filters, 'App\Models\Filters\User');
+
+        return $filter->apply();
     }
 }

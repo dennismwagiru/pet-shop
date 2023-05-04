@@ -65,4 +65,20 @@ class AdminController extends Controller
             ]
         );
     }
+
+    public function userListing(): JsonResponse
+    {
+        $order = boolean(request('desc')) ? 'desc' : 'asc';
+        $payload = User::where('is_admin', true)->filterBy(request()->all())
+//            ->orderBy('email', $order')
+            ->when(request('sortBy', false), function ($q, $sortBy) use ($order) {
+                return $q->orderBy($sortBy, $order);
+            })
+            ->paginate(request('limit', config('settings.defaults.limit')));
+
+        return $this->apiResponse(
+            data: ['payload' => $payload],
+            type: 'payload',
+        );
+    }
 }

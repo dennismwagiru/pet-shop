@@ -1,0 +1,24 @@
+{
+  "resources/css/app.css": {
+    "file": "assets/app-4ed993c7.js",
+    "isEntry": true,
+    "src": "resources/css/app.css"
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-0d91dc04.js",
+    "isEntry": true,
+    "src": "resources/js/app.js"
+  },
+  "resources/js/swagger.css": {
+    "file": "assets/swagger-23d0d482.css",
+    "src": "resources/js/swagger.css"
+  },
+  "resources/js/swagger.js": {
+    "css": [
+      "assets/swagger-23d0d482.css"
+    ],
+    "file": "assets/swagger-d7841f31.js",
+    "isEntry": true,
+    "src": "resources/js/swagger.js"
+  }
+}

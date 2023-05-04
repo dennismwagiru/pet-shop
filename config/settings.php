@@ -11,6 +11,9 @@ return [
             "type" => 'JWT'
         ),
         'secret' => env('JWT_SECRET', 'secret')
-    )
+    ),
+    'defaults' => [
+        'limit' => 10
+    ]
 
 ];

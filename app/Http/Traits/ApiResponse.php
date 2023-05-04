@@ -51,13 +51,22 @@ trait ApiResponse
      * @param array $data
      * @param int $statusCode
      * @param array $headers
+     * @param string $type
      * @return array
      */
-    public function parseGivenData(array $data = [], int $statusCode = 200, array $headers = []): array
-    {
+    public function parseGivenData(
+        array $data = [],
+        int $statusCode = 200,
+        array $headers = [],
+        string $type = 'data'
+    ): array {
+        if ($type === 'payload') {
+            return ["content" => $data[$type], "statusCode" => $statusCode, "headers" => $headers];
+        }
+
         $responseStructure = [
             'success' => $data['success'] ?? 0,
-            'data' => $data['data'] ?? [],
+            'data' => $data[$type] ?? [],
             'error' => $data['error'] ?? null,
             'errors' => $data['errors'] ?? null,
         ];
@@ -92,12 +101,16 @@ trait ApiResponse
      * @param array $data
      * @param int $statusCode
      * @param array $headers
-     *
+     * @param string $type
      * @return JsonResponse
      */
-    protected function apiResponse(array $data = [], int $statusCode = 200, array $headers = []): JsonResponse
-    {
-        $data = $this->parseGivenData($data, $statusCode, $headers);
+    protected function apiResponse(
+        array $data = [],
+        int $statusCode = 200,
+        array $headers = [],
+        string $type = 'data'
+    ): JsonResponse {
+        $data = $this->parseGivenData($data, $statusCode, $headers, $type);
 
         return response()->json(
             $data['content'],

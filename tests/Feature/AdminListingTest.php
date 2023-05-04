@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class AdminListingTest extends TestCase
@@ -48,7 +49,11 @@ class AdminListingTest extends TestCase
 
     public function test_unauthenticated_listing(): void
     {
-        $response = $this->get('/api/v1/admin/user-listing');
+        $response = $this->get('/api/v1/admin/user-listing',
+            headers: [
+                'Accept' => 'application/json'
+            ]
+        );
 
         $response->assertStatus(401)
             ->assertJsonPath('success', 0)
@@ -69,11 +74,39 @@ class AdminListingTest extends TestCase
             ]
         );
 
-        $count = DB::table('users')->where('is_admin')->count();
+        $count = DB::table('users')->where('is_admin', true)->count();
 
         $response->assertStatus(200)
-            ->assertJsonPath('success', 1)
             ->assertJsonPath('current_page', 1)
+            ->assertJsonPath('total', $count)
+            ->assertJsonStructure($this->structure);
+    }
+
+    public function test_authenticated_listing_pagination(): void {
+        DB::table('users')->insert([
+            'uuid' => Str::orderedUuid(),
+            'first_name' => "Test",
+            'last_name' => "User",
+            'is_admin' => true,
+            'email' => 'test-user@buckhill.co.uk',
+            'email_verified_at' => now(),
+            'password' => bcrypt('password'),
+            'avatar' => '',
+            'address' => '95 Nairobi',
+            'phone_number' => '+254704128303',
+            'is_marketing' => false
+        ]);
+        $response = $this->get('/api/v1/admin/user-listing?page=2&limit=1',
+            headers: [
+                'Authorization' => 'Bearer '. $this->getUserToken(),
+            ]
+        );
+
+        $count = DB::table('users')->where('is_admin', true)->count();
+
+        $response->assertStatus(200)
+            ->assertJsonPath('current_page', 2)
+            ->assertJsonPath('per_page', 1)
             ->assertJsonPath('total', $count)
             ->assertJsonStructure($this->structure);
     }
@@ -82,7 +115,47 @@ class AdminListingTest extends TestCase
         $this->assertTrue(true);
     }
 
-    public function test_authenticated_listing_by_page(): void {
-        $this->assertTrue(true);
+    public function test_authenticated_ordered_listing(): void {
+        DB::table('users')->insert([
+            'uuid' => Str::orderedUuid(),
+            'first_name' => "A Test",
+            'last_name' => "User",
+            'is_admin' => true,
+            'email' => 'a-test-user@buckhill.co.uk',
+            'email_verified_at' => now(),
+            'password' => bcrypt('password'),
+            'avatar' => '',
+            'address' => '',
+            'phone_number' => '',
+            'is_marketing' => false
+        ]);
+        DB::table('users')->insert([
+            'uuid' => Str::orderedUuid(),
+            'first_name' => "Test",
+            'last_name' => "User",
+            'is_admin' => true,
+            'email' => 'test-user@buckhill.co.uk',
+            'email_verified_at' => now(),
+            'password' => bcrypt('password'),
+            'avatar' => '',
+            'address' => '',
+            'phone_number' => '',
+            'is_marketing' => false
+        ]);
+        $response = $this->get('/api/v1/admin/user-listing?sortBy=email&desc=true',
+            headers: [
+                'Authorization' => 'Bearer '. $this->getUserToken(),
+            ]
+        );
+
+        $count = DB::table('users')->where('is_admin', true)->count();
+
+        $response->assertStatus(200)
+            ->assertJsonPath('current_page', 1)
+            ->assertJsonPath('data.0.email', 'test-user@buckhill.co.uk')
+            ->assertJsonPath('data.1.email', 'admin@buckhill.co.uk')
+            ->assertJsonPath('data.2.email', 'a-test-user@buckhill.co.uk')
+            ->assertJsonPath('total', $count)
+            ->assertJsonStructure($this->structure);
     }
 }
