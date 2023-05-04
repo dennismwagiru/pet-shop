@@ -42,6 +42,16 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $e): Response
     {
         if ($request->expectsJson()) {
+            if ($e instanceof PostTooLargeException) {
+                return $this->apiResponse(
+                    [
+                        'success' => 0,
+                        'error' => "Size of attached file should be less " . ini_get("upload_max_filesize") . "B",
+                    ],
+                    400
+                );
+            }
+
             if ($e instanceof AuthenticationException) {
                 return $this->apiResponse(
                     [
@@ -49,6 +59,15 @@ class Handler extends ExceptionHandler
                         'error' => 'Unauthenticated or Token Expired, Please Login',
                     ],
                     401
+                );
+            }
+            if ($e instanceof ThrottleRequestsException) {
+                return $this->apiResponse(
+                    [
+                        'success' => 0,
+                        'error' => 'Too Many Requests,Please Slow Down',
+                    ],
+                    429
                 );
             }
             if ($e instanceof ModelNotFoundException) {
@@ -68,6 +87,16 @@ class Handler extends ExceptionHandler
                         'errors' => $e->errors(),
                     ],
                     422
+                );
+            }
+            if ($e instanceof QueryException) {
+                return $this->apiResponse(
+                    [
+                        'success' => 0,
+                        'error' => 'There was Issue with the Query',
+                        'exception' => $e,
+                    ],
+                    500
                 );
             }
             if ($e instanceof Error) {

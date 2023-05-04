@@ -56,13 +56,11 @@ trait ApiResponse
     public function parseGivenData(array $data = [], int $statusCode = 200, array $headers = []): array
     {
         $responseStructure = [
-            'success' => $data['success'],
+            'success' => $data['success'] ?? 0,
             'data' => $data['data'] ?? [],
             'error' => $data['error'] ?? null,
+            'errors' => $data['errors'] ?? null,
         ];
-        if (isset($data['errors'])) {
-            $responseStructure['errors'] = $data['errors'];
-        }
         if (isset($data['status'])) {
             $statusCode = $data['status'];
         }
@@ -73,8 +71,12 @@ trait ApiResponse
 
             $statusCode = 500;
         }
-        if ($data['success'] === 1) {
-            unset($responseStructure['trace']);
+        if ($responseStructure['success'] === 0) {
+            if (!isset($responseStructure['trace'])) {
+                $responseStructure['trace'] = [];
+            }
+        } else {
+            $responseStructure['extra'] = [];
         }
         return ["content" => $responseStructure, "statusCode" => $statusCode, "headers" => $headers];
     }

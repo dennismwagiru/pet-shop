@@ -30,7 +30,7 @@ class AdminController extends Controller
         }
 
         return $this->apiResponse(
-            data: ['success' => 0, 'error' => 'Failed to authenticate user'],
+            data: ['error' => 'Failed to authenticate user'],
             statusCode: 422
         );
     }
@@ -39,7 +39,7 @@ class AdminController extends Controller
     {
         Auth::guard('jwt')->logout();
 
-        return $this->apiResponse(data: [ 'success' => 1 ]);
+        return $this->apiResponse();
     }
 
     public function create(UserRequest $request): JsonResponse
@@ -56,10 +56,13 @@ class AdminController extends Controller
         $jwtToken = $user->generateJwtToken();
 
         return $this->apiResponse(
-            data: array_merge(
-                $user->toArray(),
-                ['token' => $jwtToken->unique_id]
-            )
+            data: [
+                'success' => 1,
+                'data' => array_merge(
+                    $user->toArray(),
+                    ['token' => $jwtToken->unique_id]
+                ),
+            ]
         );
     }
 }
