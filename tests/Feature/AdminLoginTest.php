@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
 
-class AdminTest extends TestCase
+class AdminLoginTest extends TestCase
 {
     use DatabaseTransactions;
 
