@@ -16,7 +16,8 @@ class AdminController extends Controller
      * @param LoginRequest $request
      * @return JsonResponse
      */
-    public function login(LoginRequest $request): JsonResponse {
+    public function login(LoginRequest $request): JsonResponse
+    {
         if (Auth::guard('jwt')->attemptWhen($request->all(), function (User $user) {
             return $user->is_admin;
         })) {
@@ -25,65 +26,67 @@ class AdminController extends Controller
             $jwtToken = $user->generateJwtToken();
 
             return response()->json(array(
-                "success" => 1,
-                "data" => array(
-                    "token" => $jwtToken->unique_id
+                'success' => 1,
+                'data' => array(
+                    'token' => $jwtToken->unique_id
                 ),
-                "error" => null,
-                "errors" => [],
-                "extra" => []
+                'error' => null,
+                'errors' => [],
+                'extra' => []
             ));
         }
 
         return response()->json(array(
-            "success" => 0,
-            "data" => [],
-            "error" => "Failed to authenticate user",
-            "errors" => [],
-            "trace" => []
+            'success' => 0,
+            'data' => [],
+            'error' => 'Failed to authenticate user',
+            'errors' => [],
+            'trace' => []
         ), 422);
 
     }
 
-    public function logout(): JsonResponse {
+    public function logout(): JsonResponse
+    {
         Auth::guard('jwt')->logout();
 
         return response()->json(array(
-            "success" => 1,
-            "data" => [],
-            "error" => null,
-            "errors" => [],
-            "extra" => []
+            'success' => 1,
+            'data' => [],
+            'error' => null,
+            'errors' => [],
+            'extra' => []
         ));
     }
 
     public function create(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            "first_name" => 'required',
-            "last_name" => 'required',
-            "email" => 'required|unique:users,email',
-            "password" => 'required|confirmed',
-            "avatar" => 'required',
-            "address" => 'required',
-            "phone_number" => 'required'
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'email' => 'required|unique:users,email',
+            'password' => 'required|confirmed',
+            'avatar' => 'required',
+            'address' => 'required',
+            'phone_number' => 'required'
         ], [
             'password.confirmed' => 'The password confirmation does not match.',
         ]);
 
-        if ( $validator->fails() )  {
+        if ($validator->fails()) {
             return response()->json(array(
-                "success" => 0,
-                "data" => [],
-                "error" => "Failed Validation",
-                "errors" => $validator->errors(),
-                "trace" => []
+                'success' => 0,
+                'data' => [],
+                'error' => 'Failed Validation',
+                'errors' => $validator->errors(),
+                'trace' => []
             ), 422);
         }
 
         $user = User::create(array_merge(
             $request->all(),
             [
+                'is_marketing' => $request->has('marketing'),
                 'is_admin' => true,
                 'password' => bcrypt($request->get('password'))
             ]
@@ -92,16 +95,14 @@ class AdminController extends Controller
         $jwtToken = $user->generateJwtToken();
 
         return response()->json(array(
-            "success" => 1,
-            "data" => array_merge(
+            'success' => 1,
+            'data' => array_merge(
                 $user->toArray(),
-                ["token" => $jwtToken->unique_id]
+                ['token' => $jwtToken->unique_id]
             ),
-            "error" => null,
-            "errors" => [],
-            "extra" => []
+            'error' => null,
+            'errors' => [],
+            'extra' => []
         ));
     }
-
-
 }

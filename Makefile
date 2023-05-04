@@ -23,3 +23,5 @@ seed:
 test:
 	docker compose exec app php artisan migrate --env=testing
 	docker compose exec app php artisan test
+insights:
+	docker compose exec app ./vendor/bin/phpinsights -n --ansi --min-quality=75 --min-complexity=75 --min-architecture=75 --min-style=75

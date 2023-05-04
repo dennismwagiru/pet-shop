@@ -71,16 +71,16 @@ class User extends Authenticatable
 
         $signature = hash_hmac(
             algo: config('settings.jwt.algorithm'),
-            data: "$headers_encoded.$payload_encoded",
+            data: "{$headers_encoded}.{$payload_encoded}",
             key: config('settings.jwt.secret'),
             binary: true
         );
         $signature_encoded = base64url_encode($signature);
 
         return JwtToken::create(array(
-            'unique_id' => "$headers_encoded.$payload_encoded.$signature_encoded",
+            'unique_id' => "{$headers_encoded}.{$payload_encoded}.{$signature_encoded}",
             'user_id' => $this->id,
-            'token_title' => $this->first_name . " " . now()->timestamp,
+            'token_title' => $this->first_name . ' ' . now()->timestamp,
             'expires_at' => $expiresAt
         ));
     }

@@ -8,7 +8,6 @@ use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Log;
 
 class JwtAuthGuard implements Guard
 {
@@ -47,13 +46,10 @@ class JwtAuthGuard implements Guard
      * @param array $credentials
      * @return bool
      */
-    public function attempt(array $credentials = []): bool {
+    public function attempt(array $credentials = []): bool
+    {
         $user = $this->provider->retrieveByCredentials($credentials);
 
-
-        // If an implementation of UserInterface was returned, we'll ask the provider
-        // to validate the user against the given credentials, and if they are in
-        // fact valid we'll log the users into the application and return true.
         if ($user && $this->hasValidCredentials($user, $credentials)) {
             $this->setUser($user);
             return true;
@@ -122,10 +118,10 @@ class JwtAuthGuard implements Guard
             return null;
         }
 
-
-        if ($this->isTokenValid($jwtToken))
+        $tokenIsValid = $this->isTokenValid($jwtToken);
+        if ($tokenIsValid) {
             $this->setUser($this->provider->retrieveById($jwtToken->user_id));
-
+        }
         return $this->user;
     }
 
@@ -133,7 +129,7 @@ class JwtAuthGuard implements Guard
      * Get the token for the current request.
      * @return JwtToken|null
      */
-    public function getTokenForRequest (): ?JwtToken
+    public function getTokenForRequest(): ?JwtToken
     {
         $authorization = $this->request->header('Authorization');
         $token = str_replace('Bearer ', '', $authorization);
@@ -147,9 +143,11 @@ class JwtAuthGuard implements Guard
      * @param JwtToken $jwtToken
      * @return bool
      */
-    public function isTokenValid(JwtToken $jwtToken): bool {
-        if ($jwtToken->expires_at < now())
+    public function isTokenValid(JwtToken $jwtToken): bool
+    {
+        if ($jwtToken->expires_at < now()) {
             return false;
+        }
 
         $token = $jwtToken->unique_id;
 
@@ -159,17 +157,15 @@ class JwtAuthGuard implements Guard
         $payload = base64_decode($tokenParts[1]);
         $signature_provided = $tokenParts[2];
 
-
         // build a signature based on the header and payload using the secret
         $base64_url_header = base64url_encode($header);
         $base64_url_payload = base64url_encode($payload);
-        $signature = hash_hmac('SHA256', $base64_url_header . "." . $base64_url_payload, config('settings.jwt.secret'), true);
+        $signature = hash_hmac('SHA256', $base64_url_header . '.' . $base64_url_payload, config('settings.jwt.secret'), true);
         $base64_url_signature = base64url_encode($signature);
 
         // verify it matches the signature provided in the jwt
-        return ($base64_url_signature === $signature_provided);
+        return $base64_url_signature === $signature_provided;
     }
-
 
     /**
      * Get the ID for the currently authenticated user.
@@ -178,7 +174,7 @@ class JwtAuthGuard implements Guard
      */
     public function id(): mixed
     {
-        if ($user = $this->user()) {
+        if ($this->user()) {
             return $this->user()->getAuthIdentifier();
         }
         return null;
@@ -202,9 +198,9 @@ class JwtAuthGuard implements Guard
             $this->setUser($user);
 
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -230,6 +226,18 @@ class JwtAuthGuard implements Guard
     }
 
     /**
+     * Logout current user
+     *
+     * @return void
+     */
+    public function logout(): void
+    {
+        $this->user?->jwt_tokens()
+            ->where('expires_at', '>=', now())
+            ->update(['expires_at' => now()]);
+    }
+
+    /**
      * @param $callbacks
      * @param Authenticatable $user
      * @return bool
@@ -243,17 +251,5 @@ class JwtAuthGuard implements Guard
         }
 
         return true;
-    }
-
-    /**
-     * Logout current user
-     *
-     * @return void
-     */
-    public function logout(): void
-    {
-        $this->user?->jwt_tokens()
-            ->where('expires_at', '>=', now())
-            ->update(['expires_at' => now()]);
     }
 }

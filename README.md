@@ -1,5 +1,7 @@
 Pet-Shop Backend Developer Task
 ==============
+![CI Workflow](https://github.com/dennismwagiru/pet-shop/actions/workflows/checks.yml/badge.svg "Workflow Badge")
+
 
 Writing Pet-Shop Api using Laravel, in PHP8.2.
 
@@ -66,8 +68,8 @@ Writing Pet-Shop Api using Laravel, in PHP8.2.
 #### Must Have
 - [X] The application must be written in PHP 8.2
 - [X] The application must use Laravel Framework v.10
-- [ ] Every route must be documented using swagger (OpenAPI) so that we can test your backend APIs
-- [ ] The application must have at least 10 unit or feature tests
+- [X] Every route must be documented using swagger (OpenAPI) so that we can test your backend APIs
+- [X] The application must have at least 10 unit or feature tests
 - [X] The application must use a JSON Web Token implemented with a middleware
     - [X] Implemented HS256 for Token Signing/Verification
       - [X] The token must be compliant with the RFC 7519 standard
@@ -80,12 +82,12 @@ Writing Pet-Shop Api using Laravel, in PHP8.2.
       * Please avoid big commits by breaking them down into smaller and descriptive commits, ideally containing code specific to a feature.
 
 #### The Recommended
-- [ ] The application should have database Migrations and Seeders files
-- [ ] Every table should have an Eloquent model and relationships (if applicable)
-- [ ] Every endpoint should have its own controller and request class
+- [X] The application should have database Migrations and Seeders files
+- [X] Every table should have an Eloquent model and relationships (if applicable)
+- [X] Every endpoint should have its own controller and request class
   * The methods of the controllers must be linked to a route
 - [ ] Every route should be protected by a middleware (if applicable)
-- [ ] The application should have unit tests, as well as feature tests for each one of the API endpoints
+- [X] The application should have unit tests, as well as feature tests for each one of the API endpoints
 - [ ] The application should follow the PSR-12 standard
 
 #### Nice to have (bonus points)

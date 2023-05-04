@@ -5,7 +5,7 @@ on: [push]
 
 jobs:
   test:
-    name: Test
+    name: Tests & PHP Insight checks
     runs-on: ubuntu-latest
     steps:
       - name: Login to DOcker Hub
@@ -40,4 +40,5 @@ jobs:
           DB_CONNECTION: sqlite
           DB_DATABASE: database/database.sqlite
         run: vendor/bin/phpunit
-
+      - name: PHP Insights
+        run: vendor/bin/phpinsights -n --ansi --min-quality=75 --min-complexity=75 --min-architecture=75 --min-style=75 --format=github-action
