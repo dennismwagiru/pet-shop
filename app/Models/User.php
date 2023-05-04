@@ -3,10 +3,10 @@
 namespace App\Models;
 
 use App\Models\Events\SetModelUuid;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
@@ -23,7 +23,8 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = ['uuid',
-        'first_name', 'last_name', 'email', 'avatar', 'address', 'phone_number', 'is_marketing', 'is_admin', 'password'
+        'first_name', 'last_name', 'email', 'avatar', 'address', 'phone_number', 'is_marketing', 'is_admin',
+        'password',
     ];
 
     /**
@@ -47,7 +48,7 @@ class User extends Authenticatable
         'last_login_at' => 'datetime',
     ];
 
-    public function jwt_tokens(): HasMany
+    public function jwtTokens(): HasMany
     {
         return $this->hasMany(JwtToken::class, 'user_id');
     }
@@ -60,11 +61,11 @@ class User extends Authenticatable
     public function generateJwtToken(): JwtToken
     {
         $expiresAt = now()->add('seconds', config('settings.jwt.lifetime'));
-        $payload = array(
+        $payload = [
             'iss' => config('app.url'),
             'user_uuid' => $this->uuid,
-            'exp' => $expiresAt->timestamp
-        );
+            'exp' => $expiresAt->timestamp,
+        ];
 
         $headers_encoded = base64url_encode(json_encode(config('settings.jwt.headers')));
         $payload_encoded = base64url_encode(json_encode($payload));
@@ -77,12 +78,12 @@ class User extends Authenticatable
         );
         $signature_encoded = base64url_encode($signature);
 
-        return JwtToken::create(array(
+        return JwtToken::create([
             'unique_id' => "{$headers_encoded}.{$payload_encoded}.{$signature_encoded}",
             'user_id' => $this->id,
             'token_title' => $this->first_name . ' ' . now()->timestamp,
-            'expires_at' => $expiresAt
-        ));
+            'expires_at' => $expiresAt,
+        ]);
     }
 
     /**

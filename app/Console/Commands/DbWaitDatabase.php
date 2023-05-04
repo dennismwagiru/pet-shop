@@ -3,8 +3,8 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\QueryException;
 
 class DbWaitDatabase extends Command
 {

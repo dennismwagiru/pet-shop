@@ -2,12 +2,13 @@
 
 namespace App\Services\Auth;
 
+use Closure;
 use App\Models\JwtToken;
-use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Arr;
+use Illuminate\Http\Request;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\UserProvider;
-use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
+use Illuminate\Contracts\Auth\Authenticatable;
 
 class JwtAuthGuard implements Guard
 {
@@ -68,7 +69,6 @@ class JwtAuthGuard implements Guard
     public function attemptWhen(array $credentials = [], $callbacks = null): bool
     {
         if ($this->attempt($credentials)) {
-
             $user = $this->provider->retrieveByCredentials($credentials);
 
             if ($this->hasValidCredentials($user, $credentials) && $this->shouldLogin($callbacks, $user)) {
@@ -160,7 +160,12 @@ class JwtAuthGuard implements Guard
         // build a signature based on the header and payload using the secret
         $base64_url_header = base64url_encode($header);
         $base64_url_payload = base64url_encode($payload);
-        $signature = hash_hmac('SHA256', $base64_url_header . '.' . $base64_url_payload, config('settings.jwt.secret'), true);
+        $signature = hash_hmac(
+            algo: 'SHA256',
+            data: $base64_url_header . '.' . $base64_url_payload,
+            key: config('settings.jwt.secret'),
+            binary: true
+        );
         $base64_url_signature = base64url_encode($signature);
 
         // verify it matches the signature provided in the jwt
@@ -170,7 +175,7 @@ class JwtAuthGuard implements Guard
     /**
      * Get the ID for the currently authenticated user.
      *
-     * @return int|mixed|string|null
+     * @return int|null
      */
     public function id(): mixed
     {
@@ -188,10 +193,6 @@ class JwtAuthGuard implements Guard
      */
     public function validate(array $credentials = []): bool
     {
-        if (empty($credentials['username']) || empty($credentials['password'])) {
-            return false;
-        }
-
         $user = $this->provider->retrieveByCredentials($credentials);
 
         if (! is_null($user) && $this->provider->validateCredentials($user, $credentials)) {
@@ -232,17 +233,17 @@ class JwtAuthGuard implements Guard
      */
     public function logout(): void
     {
-        $this->user?->jwt_tokens()
+        $this->user?->jwtTokens()
             ->where('expires_at', '>=', now())
             ->update(['expires_at' => now()]);
     }
 
     /**
-     * @param $callbacks
+     * @param Closure $callbacks
      * @param Authenticatable $user
      * @return bool
      */
-    protected function shouldLogin($callbacks, Authenticatable $user): bool
+    protected function shouldLogin(Closure $callbacks, Authenticatable $user): bool
     {
         foreach (Arr::wrap($callbacks) as $callback) {
             if (! $callback($user, $this)) {
