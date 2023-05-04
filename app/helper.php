@@ -27,10 +27,12 @@ if (!function_exists('boolean')) {
         }
 
         $typeOfVar = gettype($variable);
-        if ($typeOfVar === 'boolean') {
+        if ($typeOfVar == 'boolean') {
             return $variable;
-        } elseif ($typeOfVar === 'string') {
-            return $variable === 'true';
+        } elseif (is_numeric($variable)) {
+            return (int)$variable == 1;
+        } elseif ($typeOfVar == 'string') {
+            return $variable == 'true';
         }
         return false;
     }

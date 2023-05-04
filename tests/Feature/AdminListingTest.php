@@ -139,7 +139,7 @@ class AdminListingTest extends TestCase
     }
 
     public function test_authenticated_sort_by_unknown_column(): void {
-        $response = $this->get('/api/v1/admin/user-listing?email=a-test-user',
+        $response = $this->get('/api/v1/admin/user-listing?sortBy=emailsss&desc=true',
             headers: [
                 'Authorization' => 'Bearer '. $this->getUserToken(),
             ]
