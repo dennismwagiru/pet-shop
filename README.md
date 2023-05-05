@@ -22,7 +22,7 @@ Writing Pet-Shop Api using Laravel, in PHP8.2.
 * The project has been containerized with the following services included:-
 
   | Service    | Port |
-      |------------|------|
+  |------------|------|
   | APP (HTTP) | 8000 |
   | MySQL      | 3306 |
   | Nginx      |      |
@@ -108,8 +108,9 @@ Writing Pet-Shop Api using Laravel, in PHP8.2.
 - [X] It would be nice to have a Dockerfile for the application and to be able to boot it with docker-compose or docker run
     * Laravel Sail or similar packages are not providing extra points; you should write something yourself to gain an advantage.
 - [ ] It would be nice to see a Laravel IDE Helper Generator
-- [X] It would be nice if Larastan Level 8 rules for static code coverage passed successfully
-    * Pro Tip: Avoid ignoring errors as much as possible
+  * **Used <a target="_blank" href="https://github.com/barryvdh/laravel-ide-helper">IDE Helper Generator for Laravel</a>**
+- [ ] It would be nice if Larastan Level 8 rules for static code coverage passed successfully
+    *  **Still working on reducing the errors**
 - [X] It would be nice to have PHP Insights implemented with a minimum score of 75% for each quality gate
 
   ✨ Analysis Completed !
