@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\EditUserRequest;
-use App\Http\Requests\Admin\LoginRequest;
-use App\Http\Requests\Admin\UserRequest;
-use App\Http\Traits\HasApiResponse;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
+use App\Http\Traits\HasApiResponse;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
+use App\Http\Requests\Admin\UserRequest;
+use App\Http\Requests\Admin\LoginRequest;
+use App\Http\Requests\Admin\EditUserRequest;
 
 class AdminController extends Controller
 {
@@ -92,7 +92,8 @@ class AdminController extends Controller
      * @param string $uuid
      * @return JsonResponse
      */
-    public function userEdit(EditUserRequest $request, string $uuid): JsonResponse {
+    public function userEdit(EditUserRequest $request, string $uuid): JsonResponse
+    {
         $user = User::where('is_admin', true)->where('uuid', $uuid)->firstOrFail();
 
         $user->update(array_merge(
@@ -112,7 +113,8 @@ class AdminController extends Controller
         );
     }
 
-    public function userDelete(string $uuid): JsonResponse {
+    public function userDelete(string $uuid): JsonResponse
+    {
         $user = User::where('is_admin', true)->where('uuid', $uuid)->firstOrFail();
 
         $user->delete();

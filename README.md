@@ -118,18 +118,18 @@ Writing Pet-Shop Api using Laravel, in PHP8.2.
   ✨ Analysis Completed !
 
 
-|   Code   |    Complexity  |   Architecture    |   Style   |
-|----------|----------------|-------------------|-----------|
-|   87.8%  |    77.8%       |   87.5%           |   100 %   |  
+|   Code   | Complexity |   Architecture    |   Style   |
+|----------|------------|-------------------|-----------|
+|   87.8%  | 79.2%      |   87.5%           |   100 %   |  
 
 
 
 
 | Metric         | Score                                                     |
 |----------------|-----------------------------------------------------------|
-| [CODE]         | 87.8 pts within 958 lines                                 |
-| [COMPLEXITY]   | 77.8 pts with average of 1.67 cyclomatic complexity       |
-| [ARCHITECTURE] | 87.5 pts within 42 files                                  |
+| [CODE]         | 87.8 pts within 983 lines                                 |
+| [COMPLEXITY]   | 79.2 pts with average of 1.62 cyclomatic complexity       |
+| [ARCHITECTURE] | 87.5 pts within 43 files                                  |
 | [MISC]         | 100 pts on coding style and 0 security issues encountered |
 
 

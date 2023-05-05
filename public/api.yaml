@@ -34,6 +34,7 @@ paths:
           description: "Unprocessable Entity"
         500:
           description: "Internal server error"
+      security: []
 
   /api/v1/admin/logout:
     get:
@@ -52,6 +53,7 @@ paths:
           description: "Unprocessable Entity"
         500:
           description: "Internal server error"
+      security: []
 
   /api/v1/admin/create:
     post:
