@@ -63,6 +63,20 @@ Writing Pet-Shop Api using Laravel, in PHP8.2.
     ````bash
         make fresh
     ````
+* Make model field filter
+    ````bash
+        make make-filter
+    ````
+  * Enter the name of the Field. 
+  * i.e. to add a filter for user last name enter **User/LastName**
+* Generate Insights
+    ````bash
+        make insights
+    ````
+* Analyse Larastan Level 8 rules for static code coverage
+    ````bash
+        make analyse
+    ````
 
 ### Requirements
 #### Must Have
@@ -86,7 +100,7 @@ Writing Pet-Shop Api using Laravel, in PHP8.2.
 - [X] Every table should have an Eloquent model and relationships (if applicable)
 - [X] Every endpoint should have its own controller and request class
   * The methods of the controllers must be linked to a route
-- [ ] Every route should be protected by a middleware (if applicable)
+- [X] Every route should be protected by a middleware (if applicable)
 - [X] The application should have unit tests, as well as feature tests for each one of the API endpoints
 - [ ] The application should follow the PSR-12 standard
 
@@ -94,6 +108,24 @@ Writing Pet-Shop Api using Laravel, in PHP8.2.
 - [X] It would be nice to have a Dockerfile for the application and to be able to boot it with docker-compose or docker run
   * Laravel Sail or similar packages are not providing extra points; you should write something yourself to gain an advantage.
 - [ ] It would be nice to see a Laravel IDE Helper Generator
-- [ ] It would be nice if Larastan Level 8 rules for static code coverage passed successfully
+- [X] It would be nice if Larastan Level 8 rules for static code coverage passed successfully
   * Pro Tip: Avoid ignoring errors as much as possible
-- [ ] It would be nice to have PHP Insights implemented with a minimum score of 75% for each quality gate
+- [X] It would be nice to have PHP Insights implemented with a minimum score of 75% for each quality gate
+
+    ✨ Analysis Completed !
+
+
+                 Code                 Complexity             Architecture               Style
+
+
+                87.8%                   77.8%                   87.5%                   100 %  
+
+
+
+    |-------------------|---------------------------------------------------------------|
+    | [CODE]            | 87.8 pts within 958 lines                                     |
+    | [COMPLEXITY]      | 77.8 pts with average of 1.67 cyclomatic complexity           |
+    | [ARCHITECTURE]    | 87.5 pts within 42 files                                      |
+    | [MISC]            | 100 pts on coding style and 0 security issues encountered     |
+
+

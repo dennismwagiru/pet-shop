@@ -2,21 +2,41 @@
 
 namespace App\Services\Utilities;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 
 class FilterBuilder
 {
+    /**
+     * @var Builder<Model>
+     */
     protected Builder $query;
+
+    /**
+     * @var array|bool[]|int[]|string[]
+     */
     protected array $filters;
+
+    /**
+     * @var string
+     */
     protected string $namespace;
 
-    public function __construct($query, $filters, $namespace)
+    /**
+     * @param Builder<Model> $query
+     * @param array<string, string|bool|int> $filters
+     * @param string $namespace
+     */
+    public function __construct(Builder $query, array $filters, string $namespace)
     {
         $this->query = $query;
         $this->filters = $filters;
         $this->namespace = $namespace;
     }
 
+    /**
+     * @return Builder<Model>
+     */
     public function apply(): Builder
     {
         foreach ($this->filters as $name => $value) {
@@ -35,10 +55,10 @@ class FilterBuilder
 
     /**
      * Normalize name
-     * @param $name
+     * @param string $name
      * @return string
      */
-    private function normalizeName($name): string
+    private function normalizeName(string $name): string
     {
         // Remove everything upto and including '__'
         [$result] = explode("__", $name, 2);

@@ -32,22 +32,22 @@ class JwtAuthGuard implements Guard
     /**
      * Determine if the user matches the credentials
      *
-     * @param $user
-     * @param $credentials
+     * @param Authenticatable $user
+     * @param array<string, string> $credentials
      * @return bool
      */
-    public function hasValidCredentials($user, $credentials): bool
+    public function hasValidCredentials(Authenticatable $user, array $credentials): bool
     {
-        return ! is_null($user) && $this->provider->validateCredentials($user, $credentials);
+        return $this->provider->validateCredentials($user, $credentials);
     }
 
     /**
      * Attempt to authenticate a user using the given credentials.
      *
-     * @param array $credentials
+     * @param array<string, string> $credentials
      * @return bool
      */
-    public function attempt(array $credentials = []): bool
+    public function attempt(array $credentials): bool
     {
         $user = $this->provider->retrieveByCredentials($credentials);
 
@@ -62,14 +62,18 @@ class JwtAuthGuard implements Guard
     /**
      * Attempt to authenticate a user using the given credentials with some additional callbacks
      *
-     * @param array $credentials
-     * @param $callbacks
+     * @param array<string, string> $credentials
+     * @param Closure $callbacks
      * @return bool
      */
-    public function attemptWhen(array $credentials = [], $callbacks = null): bool
+    public function attemptWhen(array $credentials, Closure $callbacks): bool
     {
         if ($this->attempt($credentials)) {
             $user = $this->provider->retrieveByCredentials($credentials);
+
+            if (is_null($user)) {
+                return false;
+            }
 
             if ($this->hasValidCredentials($user, $credentials) && $this->shouldLogin($callbacks, $user)) {
                 $this->setUser($user);
@@ -119,8 +123,8 @@ class JwtAuthGuard implements Guard
         }
 
         $tokenIsValid = $this->isTokenValid($jwtToken);
-        if ($tokenIsValid) {
-            $this->setUser($this->provider->retrieveById($jwtToken->user_id));
+        if ($tokenIsValid && $user = $this->provider->retrieveById($jwtToken->user_id)) {
+            $this->setUser($user);
         }
         return $this->user;
     }
@@ -131,7 +135,7 @@ class JwtAuthGuard implements Guard
      */
     public function getTokenForRequest(): ?JwtToken
     {
-        $authorization = $this->request->header('Authorization');
+        $authorization = $this->request->header('Authorization') ?? '';
         $token = str_replace('Bearer ', '', $authorization);
 
         return JwtToken::where('unique_id', $token)->first();
@@ -175,7 +179,7 @@ class JwtAuthGuard implements Guard
     /**
      * Get the ID for the currently authenticated user.
      *
-     * @return int|null
+     * @return mixed
      */
     public function id(): mixed
     {
@@ -188,7 +192,7 @@ class JwtAuthGuard implements Guard
     /**
      * Validate a user's credentials
      *
-     * @param array $credentials
+     * @param array<string, string> $credentials
      * @return bool
      */
     public function validate(array $credentials = []): bool

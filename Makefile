@@ -25,5 +25,7 @@ test:
 	docker compose exec app php artisan test
 insights:
 	docker compose exec app php artisan insights -n --ansi --min-quality=75 --min-complexity=75 --min-architecture=75 --min-style=75
+analyse:
+	docker compose exec app ./vendor/bin/phpstan analyse --memory-limit 256M
 make-filter:
 	docker compose exec app php artisan make:filter

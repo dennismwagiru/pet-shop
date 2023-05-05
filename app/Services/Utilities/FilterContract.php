@@ -4,5 +4,5 @@ namespace App\Services\Utilities;
 
 interface FilterContract
 {
-    public function handle($value): void;
+    public function handle(string|bool $value): void;
 }
