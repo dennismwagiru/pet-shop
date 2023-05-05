@@ -10,7 +10,7 @@ use Ramsey\Uuid\UuidInterface;
 use Str;
 use Tests\TestCase;
 
-class DeleteUser extends TestCase
+class DeleteUserTest extends TestCase
 {
     use DatabaseTransactions;
 
@@ -119,7 +119,6 @@ class DeleteUser extends TestCase
     public function test_admin_login_after_delete(): void {
         $uuid = $this->createTestUser();
 
-        \Log::warning($uuid);
         $this->delete(
             uri: '/api/v1/admin/user-delete/'.$uuid,
             headers: [
@@ -144,5 +143,36 @@ class DeleteUser extends TestCase
                 'errors',
                 'trace'
             ]);
+    }
+
+    /**
+     * Test whether an admin can login after deletion
+     *
+     * 1. Assert that user login fails after deletion
+     */
+    public function test_user_doesnt_exist_after_deletion(): void {
+        $uuid = $this->createTestUser();
+
+        $response = $this->delete(
+            uri: '/api/v1/admin/user-delete/'.$uuid,
+            headers: [
+                'Authorization' => 'Bearer '. $this->getUserToken(),
+            ]
+        );
+
+        $response
+            ->assertStatus(200)
+            ->assertJsonPath('success', 1)
+            ->assertJsonStructure([
+                'success',
+                'data',
+                'error',
+                'errors',
+                'trace'
+            ]);
+
+        $this->assertDatabaseMissing('users', [
+            "email" => 'test@buckhill.co.uk'
+        ]);
     }
 }
