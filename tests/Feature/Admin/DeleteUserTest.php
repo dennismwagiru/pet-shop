@@ -21,7 +21,7 @@ class DeleteUserTest extends TestCase
     }
 
     // Utility function to create a test user
-    private function createTestUser(): UuidInterface
+    private function createTestUser($isAdmin = true): UuidInterface
     {
         $uuid = Str::orderedUuid();
 
@@ -29,7 +29,7 @@ class DeleteUserTest extends TestCase
             'uuid' => $uuid,
             'first_name' => "Test",
             'last_name' => "User",
-            'is_admin' => true,
+            'is_admin' => $isAdmin,
             'email' => 'test@buckhill.co.uk',
             'email_verified_at' => now(),
             'password' => 'password',
@@ -146,9 +146,9 @@ class DeleteUserTest extends TestCase
     }
 
     /**
-     * Test whether an admin can login after deletion
+     * Test whether an admin still exists in db after deletion
      *
-     * 1. Assert that user login fails after deletion
+     * 1. Assert that user-email does not exist in db after deletion
      */
     public function test_user_doesnt_exist_after_deletion(): void {
         $uuid = $this->createTestUser();
@@ -160,6 +160,8 @@ class DeleteUserTest extends TestCase
             ]
         );
 
+        \Log::info($response->status());
+        \Log::info($response->json());
         $response
             ->assertStatus(200)
             ->assertJsonPath('success', 1)
@@ -168,10 +170,41 @@ class DeleteUserTest extends TestCase
                 'data',
                 'error',
                 'errors',
-                'trace'
+                'extra'
             ]);
 
         $this->assertDatabaseMissing('users', [
+            "email" => 'test@buckhill.co.uk'
+        ]);
+    }
+
+    /**
+     * Test whether an this end-point can delete a non admin
+     *
+     * 1. Assert that status code is 404
+     */
+    public function test_cannot_delete_non_admin(): void {
+        $uuid = $this->createTestUser(isAdmin: false);
+
+        $response = $this->delete(
+            uri: '/api/v1/admin/user-delete/'.$uuid,
+            headers: [
+                'Authorization' => 'Bearer '. $this->getUserToken(),
+            ]
+        );
+
+        $response
+            ->assertStatus(404)
+            ->assertJsonPath('success', 0)
+            ->assertJsonStructure([
+                'success',
+                'data',
+                'error',
+                'errors',
+                'trace'
+            ]);
+
+        $this->assertDatabaseHas('users', [
             "email" => 'test@buckhill.co.uk'
         ]);
     }

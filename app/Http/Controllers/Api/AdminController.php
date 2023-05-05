@@ -41,7 +41,7 @@ class AdminController extends Controller
     {
         Auth::guard('jwt')->logout();
 
-        return $this->apiResponse();
+        return $this->apiResponse(data: ['success' => 1]);
     }
 
     public function create(UserRequest $request): JsonResponse
@@ -110,5 +110,13 @@ class AdminController extends Controller
                 'data' => $user->toArray(),
             ]
         );
+    }
+
+    public function userDelete(string $uuid): JsonResponse {
+        $user = User::where('is_admin', true)->where('uuid', $uuid)->firstOrFail();
+
+        $user->delete();
+
+        return $this->apiResponse(data: ['success' => 1]);
     }
 }

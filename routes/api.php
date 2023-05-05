@@ -23,6 +23,7 @@ Route::prefix('v1')->name('v1.')->middleware('accept-json')->group(function () {
             Route::post('create', [AdminController::class, 'create'])->name('create');
             Route::get('user-listing', [AdminController::class, 'userListing'])->name('create');
             Route::put('user-edit/{uuid}', [AdminController::class, 'userEdit'])->name('edit');
+            Route::delete('user-delete/{uuid}', [AdminController::class, 'userDelete'])->name('delete');
         });
     });
 });

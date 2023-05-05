@@ -37,6 +37,8 @@ Writing Pet-Shop Api using Laravel, in PHP8.2.
            make install
         ```
        Go to <a href="http://127.0.0.1:8000" target="_blank">http://127.0.0.1:8000</a> to launch Swagger Api Documentation
+    * Admin Email -> *admin@buckhill.co.uk*
+    * Password -> *password*
 
 ### Other scripts included
 * Subsequent Runs
