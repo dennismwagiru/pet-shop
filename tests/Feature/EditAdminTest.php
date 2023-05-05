@@ -50,9 +50,9 @@ class EditAdminTest extends TestCase
             'email' => 'test@buckhill.co.uk',
             'email_verified_at' => now(),
             'password' => 'password',
-            'avatar' => '',
-            'address' => '',
-            'phone_number' => '',
+            'avatar' => $uuid,
+            'address' => '20 132',
+            'phone_number' => '25471234823',
             'is_marketing' => false
         ));
 
@@ -77,8 +77,8 @@ class EditAdminTest extends TestCase
 
         $payload = $this->getPayload();
 
-        $response = $this->post(
-            uri: '/api/v1/admin/user_edit/'.$uuid,
+        $response = $this->put(
+            uri: '/api/v1/admin/user-edit/'.$uuid,
             data: $payload
         );
 
@@ -102,9 +102,12 @@ class EditAdminTest extends TestCase
         $uuid = Str::uuid();
 
         $payload = $this->getPayload();
-        $response = $this->post(
-            uri: '/api/v1/admin/user_edit/'.$uuid,
-            data: $payload
+        $response = $this->put(
+            uri: '/api/v1/admin/user-edit/'.$uuid,
+            data: $payload,
+            headers: [
+                'Authorization' => 'Bearer ' . $this->getUserToken()
+            ]
         );
 
         $response->assertStatus(404)
@@ -126,8 +129,11 @@ class EditAdminTest extends TestCase
     public function test_edit_admin_validation(): void {
         $uuid = $this->createTestUser();
 
-        $response = $this->post(
-            uri: '/api/v1/admin/user_edit/'.$uuid
+        $response = $this->put(
+            uri: '/api/v1/admin/user-edit/'.$uuid,
+            headers: [
+                'Authorization' => 'Bearer ' . $this->getUserToken()
+            ]
         );
 
         $response->assertStatus(422)
@@ -146,8 +152,8 @@ class EditAdminTest extends TestCase
         $uuid = $this->createTestUser();
         $payload = $this->getPayload();
 
-        $response = $this->post(
-            uri: '/api/v1/admin/user_edit/'.$uuid,
+        $response = $this->put(
+            uri: '/api/v1/admin/user-edit/'.$uuid,
             data: $payload,
             headers: [
                 'Authorization' => 'Bearer ' . $this->getUserToken()

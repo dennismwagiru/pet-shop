@@ -5,7 +5,7 @@ namespace App\Exceptions;
 use Error;
 use Throwable;
 use Illuminate\Http\Request;
-use App\Http\Traits\ApiResponse;
+use App\Http\Traits\HasApiResponse;
 use Illuminate\Database\QueryException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Validation\ValidationException;
@@ -17,7 +17,7 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
 {
-    use ApiResponse;
+    use HasApiResponse;
 
     /**
      * The list of the inputs that are never flashed to the session on validation exceptions.
@@ -74,7 +74,7 @@ class Handler extends ExceptionHandler
                 return $this->apiResponse(
                     [
                         'success' => 0,
-                        'error' => 'Entry for ' . str_replace('App\\', '', $e->getModel()) . ' not found',
+                        'error' => str_replace('App\\Models\\', '', $e->getModel()) . ' not found',
                     ],
                     404
                 );

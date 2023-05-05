@@ -9,7 +9,7 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-trait ApiResponse
+trait HasApiResponse
 {
     protected function respondWithResource(
         JsonResource $data,

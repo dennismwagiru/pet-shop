@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\User;
-use App\Http\Traits\ApiResponse;
-use Illuminate\Http\JsonResponse;
-use App\Http\Requests\UserRequest;
-use App\Http\Requests\LoginRequest;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\EditUserRequest;
+use App\Http\Requests\Admin\LoginRequest;
+use App\Http\Requests\Admin\UserRequest;
+use App\Http\Traits\HasApiResponse;
+use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
 
 class AdminController extends Controller
 {
-    use ApiResponse;
+    use HasApiResponse;
 
     /**
      * @param LoginRequest $request
@@ -70,8 +71,8 @@ class AdminController extends Controller
     public function userListing(): JsonResponse
     {
         $order = boolean(request('desc')) ? 'desc' : 'asc';
-        $payload = User::where('is_admin', true)->filterBy(request()->all())
-//            ->orderBy('email', $order')
+        $payload = User::where('is_admin', true)
+            ->filterBy(request()->all())
             ->when(request('sortBy', false), function ($q, $sortBy) use ($order) {
                 if (Schema::hasColumn('users', $sortBy)) {
                     return $q->orderBy($sortBy, $order);
@@ -83,6 +84,31 @@ class AdminController extends Controller
         return $this->apiResponse(
             data: ['payload' => $payload],
             type: 'payload',
+        );
+    }
+
+    /**
+     * @param EditUserRequest $request
+     * @param string $uuid
+     * @return JsonResponse
+     */
+    public function userEdit(EditUserRequest $request, string $uuid): JsonResponse {
+        $user = User::where('is_admin', true)->where('uuid', $uuid)->firstOrFail();
+
+        $user->update(array_merge(
+            $request->all(),
+            [
+                'avatar' => $request->get('avatar', $user->avatar) ?? $user->avatar,
+                'is_marketing' => $request->has('marketing', $request->get('is_marketing')),
+                'is_admin' => true,
+                'password' => bcrypt($request->get('password')),
+            ]
+        ));
+        return $this->apiResponse(
+            data: [
+                'success' => 1,
+                'data' => $user->toArray(),
+            ]
         );
     }
 }
