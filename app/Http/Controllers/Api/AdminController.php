@@ -25,7 +25,8 @@ class AdminController extends Controller
         if (Auth::guard('jwt')->attemptWhen($request->all(), function (User $user) {
             return $user->is_admin;
         })) {
-            $user = User::where('email', $request['email'])->first();
+            $user = User::where('email', $request['email'])->firstOrFail();
+
             $jwtToken = $user->generateJwtToken();
 
             return $this->apiResponse(['success' => 1, 'data' => ['token' => $jwtToken->unique_id]]);
