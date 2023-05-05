@@ -1,16 +1,13 @@
 <?php
 
-namespace Tests\Feature;
+namespace Admin;
 
-use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\DB;
 use Str;
 use Tests\TestCase;
 
-class CreateAdminTest extends TestCase
+class CreateUserTest extends TestCase
 {
     use DatabaseTransactions;
 
@@ -20,6 +17,9 @@ class CreateAdminTest extends TestCase
         $this->artisan('db:seed');
     }
 
+    /**
+     * Generate an access token to be used in http requests
+     */
     protected function getUserToken() {
         $response = $this->post(
             uri: '/api/v1/admin/login',
@@ -32,6 +32,12 @@ class CreateAdminTest extends TestCase
         return $response->json('data.token');
     }
 
+    /**
+     * Test whether an admin can be created with an unauthenticated request
+     *
+     * 1. Assert the response status code is 401
+     * 2. Assert that the user was not saved to the database
+     */
     public function test_create_admin_unauthenticated(): void {
         $email = 'test@buckhill.co.uk';
         $password = 'password';
@@ -68,6 +74,14 @@ class CreateAdminTest extends TestCase
         ]);
     }
 
+    /**
+     * Test whether an admin can be created with mismatching passwords
+     *
+     * 1. Assert the response status code is 422
+     * 2. Assert that the error is a validation error
+     * 3. Assert that the errors indicate password did not match confirmation
+     * 4. Assert that the user was not saved to the database
+     */
     public function test_create_admin_with_mismatching_passwords(): void {
         $response = $this->post(
             uri: '/api/v1/admin/create',
@@ -104,6 +118,13 @@ class CreateAdminTest extends TestCase
         ]);
     }
 
+    /**
+     * Test whether an admin can be created with an invalid payload
+     *
+     * 1. Assert the response status code is 422
+     * 2. Assert that the error is a validation error
+     * 3. Assert that the user was not saved to the database
+     */
     public function test_create_admin_with_invalid_payload(): void
     {
         $response = $this->post(
@@ -136,6 +157,14 @@ class CreateAdminTest extends TestCase
         ]);
     }
 
+    /**
+     * Test whether an admin can be created with an already existing email address
+     *
+     * 1. Assert the response status code is 422
+     * 2. Assert that the error is a validation error
+     * 3. Assert that the errors indicate that the email is already taken
+     * 4. Assert that the user was not saved to the database
+     */
     public function test_create_admin_with_existing_email(): void
     {
         $email = 'test@buckhill.co.uk';
@@ -188,6 +217,14 @@ class CreateAdminTest extends TestCase
         $this->assertTrue($count == 1);
     }
 
+    /**
+     * Test whether an admin can be created with a valid payload
+     *
+     * 1. Assert the response status code is 200
+     * 2. Assert that success is 1
+     * 3. Assert that the email in the response is the same one that was sent
+     * 4. Assert that the user exists in the database
+     */
     public function test_create_admin_with_valid_payload(): void {
         $email = 'test@buckhill.co.uk';
         $password = 'password';

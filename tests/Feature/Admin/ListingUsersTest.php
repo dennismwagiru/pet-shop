@@ -1,15 +1,13 @@
 <?php
 
-namespace Tests\Feature;
+namespace Admin;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
-class AdminListingTest extends TestCase
+class ListingUsersTest extends TestCase
 {
     use DatabaseTransactions;
 

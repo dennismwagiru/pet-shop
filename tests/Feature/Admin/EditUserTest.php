@@ -1,17 +1,14 @@
 <?php
 
-namespace Tests\Feature;
+namespace Admin;
 
-use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Ramsey\Uuid\UuidInterface;
 use Tests\TestCase;
 
-class EditAdminTest extends TestCase
+class EditUserTest extends TestCase
 {
     use DatabaseTransactions;
 
